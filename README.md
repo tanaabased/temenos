@@ -1,10 +1,21 @@
 # Temenos
 
-Tanaab-based workspace for Temenos, an OpenClaw agent. This scaffold is ready
-for drafting, not installation. It does not configure accounts, permissions,
-deployment, or automations.
+Temenos is an OpenClaw workspace for drafting, not installation. It does not
+configure accounts, permissions, deployment, or automations.
 
-Start with the [voice skill stub](skills/voice/SKILL.md) and the
-[skill author stub](skills/skill-author/SKILL.md). Both are placeholders for
-[Temenos’s identity and authorship work](https://github.com/tanaabased/temenos/issues/5),
-not instructions for a running agent.
+Use the [skill author guide](skills/skill-author/SKILL.md) to write Temenos-local
+skills and the [voice draft](skills/voice/SKILL.md) to see what remains open in
+[Temenos’s identity and authorship work](https://github.com/tanaabased/temenos/issues/5).
+
+## Development
+
+Use the Bun version in [.bun-version](.bun-version). From the repository root:
+
+```sh
+bun install --frozen-lockfile --ignore-scripts
+bun run lint
+bun run validate:skills
+bun run test
+```
+
+These checks do not start OpenClaw or require connected accounts.

@@ -1,0 +1,9 @@
+interface:
+  display_name: 'Voice (draft)'
+  short_description: 'Review the unfinished Temenos voice specification'
+  icon_small: './assets/skill-icon-agent.svg'
+  icon_large: './assets/skill-icon-agent.svg'
+  brand_color: '#00c88a'
+  default_prompt: 'Review $temenos-voice as a draft only; do not apply it as an active voice.'
+policy:
+  allow_implicit_invocation: false
