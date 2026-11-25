@@ -1,0 +1,54 @@
+# Copy to agent.local.yaml on the deployment host when Temenos accounts are ready.
+# Keep actual values, keys, and provider configuration out of Git.
+#
+# agent:
+#   email:
+#     from-environment: TEMENOS_EMAIL
+#
+# environment:
+#   # op: <Temenos service account integration ID, if needed>
+#   set:
+#     # TEMENOS_SSH_KEY:
+#     #   from-op: 'op://<Temenos vault>/<item>/private key?ssh-format=openssh'
+#     TEMENOS_BACKUP_FOLDER_ID: '<private Temenos Drive folder ID>'
+#   required:
+#     - TEMENOS_EMAIL
+#     - GH_TOKEN
+#     - TEMENOS_SSH_KEY
+#     - TEMENOS_RECALL_KEY
+#     - GOG_ACCOUNT
+#     - GOG_CREDENTIALS_JSON
+#     - GOG_TOKEN_JSON
+#     - GOG_KEYRING_PASSWORD
+#
+# git:
+#   ssh:
+#     private-keys:
+#       from-environment: TEMENOS_SSH_KEY
+#   signing:
+#     key: TEMENOS_SSH_KEY
+#
+# github:
+#   host: github.com
+#   username: '<verified Temenos GitHub login>'
+#   token: GH_TOKEN
+#   config:
+#     git-protocol: ssh
+#     spinner: disabled
+#     telemetry: disabled
+#   policy:
+#     releases: deny
+#
+# google:
+#   account:
+#     from-environment: GOG_ACCOUNT
+#   credential-encoding: base64
+#   oauth-client: GOG_CREDENTIALS_JSON
+#   oauth-token: GOG_TOKEN_JSON
+#   keyring-password: GOG_KEYRING_PASSWORD
+#
+# memory:
+#   search:
+#     provider: openai
+#     model: text-embedding-3-small
+#     api-key: TEMENOS_RECALL_KEY

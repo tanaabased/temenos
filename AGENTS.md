@@ -1,6 +1,6 @@
 # Temenos workspace
 
-This scaffold is for contributors, not for running an agent. Read
+This workspace includes an Agent System scaffold but is not deployed. Read
 [IDENTITY.md](IDENTITY.md) for agreed identity metadata,
 [SOUL.md](SOUL.md) for open mission and boundary decisions, and the
 [voice draft](skills/voice/SKILL.md) for editorial context. The

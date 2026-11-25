@@ -1,3 +1,3 @@
 # Identity
 
-- Name: Temenos
+- Name: TEMENOS

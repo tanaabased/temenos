@@ -1,0 +1,50 @@
+# Workspace Registration Example
+
+## What this example does
+
+Register checked-out repository as `temenos`'s workspace and import identity.
+Check resulting registration and configuration. Identity file and clean checkout
+must survive untouched.
+
+## What it doesn't do
+
+Registration is not proof agent can run. This example configures no model,
+starts no Gateway, and does not prove runtime skill loading or model behavior.
+Static skill and asset checks belong to [development checks](../../README.md#development).
+Installed Canon skill availability belongs to [setup](../setup/README.md);
+credentials belong to [Agent System](https://github.com/tanaabased/openclaw-agent-system).
+
+## Setup
+
+```bash
+# should register the checked-out repository with lowercase machine id and reviewed display name
+set -o pipefail
+cp "$GITHUB_WORKSPACE/IDENTITY.md" "${TMPDIR}/IDENTITY.before.md"
+openclaw agents add temenos --workspace "$GITHUB_WORKSPACE" --non-interactive --json | tee "${TMPDIR}/agent.json"
+
+# should import temenos identity from the workspace
+set -o pipefail
+openclaw agents set-identity --agent temenos --workspace "$GITHUB_WORKSPACE" --from-identity --json | tee "${TMPDIR}/identity.json"
+```
+
+## Testing
+
+```bash
+# should report the registered temenos workspace and reviewed display name
+jq -e --arg workspace "$GITHUB_WORKSPACE" '
+  .agentId == "temenos" and .name == "temenos" and .workspace == $workspace
+' "${TMPDIR}/agent.json"
+openclaw agents list --json | jq -e 'any(.[]; .id == "temenos")'
+
+# should report temenos identity from the workspace
+jq -e '.agentId == "temenos" and .identity.name == "TEMENOS"' "${TMPDIR}/identity.json"
+
+# should validate the resulting OpenClaw configuration
+openclaw config validate --json | jq -e '.valid == true'
+
+# should preserve the reviewed identity file byte-for-byte
+cmp -s "${TMPDIR}/IDENTITY.before.md" "$GITHUB_WORKSPACE/IDENTITY.md"
+
+# should leave the repository worktree clean
+test -z "$(git -C "$GITHUB_WORKSPACE" status --short --untracked-files=all)"
+```
