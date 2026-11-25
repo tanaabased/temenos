@@ -1,0 +1,9 @@
+schema-version: 1
+agent:
+  id: shared-first
+  name: Shared First
+  runtime: codex
+models:
+  default:
+    model: openai/gpt-6-luna
+    effort: medium

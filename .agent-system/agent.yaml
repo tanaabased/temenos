@@ -1,0 +1,46 @@
+schema-version: 1
+
+agent:
+  id: temenos
+  name: TEMENOS
+  email: temenos@example.invalid
+  runtime: codex
+  description: Temenos OpenClaw workspace.
+
+setup-host:
+  file: ./setup-host.yaml
+
+setup-agent:
+  file: ./setup-agent.yaml
+
+models:
+  default:
+    model: openai/gpt-6.2-sol
+    effort: high
+  low:
+    model: openai/gpt-6.2-sol
+    effort: medium
+  medium:
+    model: openai/gpt-6.2-sol
+    effort: high
+  high:
+    model: openai/gpt-6.2-sol
+    effort: xhigh
+
+git:
+  worktrees: {}
+  policy:
+    delete-remote-ref: deny
+    force-push: deny
+
+backup:
+  output: .agent-system/backups
+  git-ignore: true
+  openclaw-state: required
+  include:
+    - '{MEMORY,DREAMS,BOOTSTRAP}.md'
+    - memory/**
+    - .private/**
+
+automations:
+  file: ./automations.yml

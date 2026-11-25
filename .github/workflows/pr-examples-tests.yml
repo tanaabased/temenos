@@ -1,0 +1,46 @@
+name: Example Tests
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  examples:
+    name: ${{ matrix.example }}
+    runs-on: macos-26
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+    strategy:
+      fail-fast: false
+      matrix:
+        example: [workspace, setup, shared, backup]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Add Leia to PATH
+        run: echo "$GITHUB_WORKSPACE/node_modules/.bin" >> "$GITHUB_PATH"
+      - name: Set up OpenClaw
+        uses: tanaabased/actions/setup-openclaw@v1
+        with:
+          agent-system: github:tanaabased/openclaw-agent-system#34f737f55ff3d4ced506410b2e215469a6aacd4d
+      - name: Set up Bun
+        uses: tanaabased/actions/setup-bun@v1
+      - name: Install dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Refresh Homebrew for the installation example
+        if: matrix.example == 'setup'
+        run: HOMEBREW_NO_AUTO_UPDATE= brew update-if-needed
+      - name: Run Leia example
+        env:
+          TMPDIR: ${{ runner.temp }}/temenos-example
+          EXAMPLE: ${{ matrix.example }}
+        run: |
+          mkdir -p "$TMPDIR"
+          leia "examples/$EXAMPLE/README.md" --shell bash --retry 0
+      - name: Report OpenClaw diagnostics
+        if: failure() && matrix.example == 'setup'
+        run: openclaw-diagnostics

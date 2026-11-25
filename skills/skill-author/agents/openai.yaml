@@ -1,0 +1,7 @@
+interface:
+  display_name: 'Skill Author'
+  short_description: 'Author and validate Temenos-local skills'
+  icon_small: './assets/skill-icon-agent.svg'
+  icon_large: './assets/skill-icon-agent.svg'
+  brand_color: '#00c88a'
+  default_prompt: 'Use $temenos-skill-author to draft or validate a Temenos-local skill without deciding the persona.'

@@ -1,0 +1,28 @@
+{
+  "agents": {
+    "entries": {
+      "temenos": {
+        "tools": {
+          "profile": "coding",
+          "exec": {
+            "mode": "auto"
+          }
+        },
+        "memory": {
+          "search": {
+            "rememberAcrossConversations": true,
+            "sources": ["memory", "sessions"],
+            "experimental": {
+              "sessionMemory": true
+            },
+            "store": {
+              "vector": {
+                "enabled": true
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

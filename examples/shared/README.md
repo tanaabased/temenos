@@ -1,0 +1,56 @@
+# Shared
+
+## What this example does
+
+Two agents, one shared Codex plugin. Use disposable manifests in isolated
+OpenClaw profile. Install second agent without disturbing first agent, plugin
+receipt, or plugin configuration.
+
+## What it doesn't do
+
+Skip workspace setup. No credentials or `temenos`'s host dependencies needed;
+model execution is outside this example. Full setup belongs to
+[setup](../setup/README.md); credentials and intake lifecycle belong to
+[Agent System](https://github.com/tanaabased/openclaw-agent-system/tree/main/examples/os-install-online).
+
+## Setup
+
+```bash
+# should prepare two independent agent workspaces
+mkdir -p "${TMPDIR}/shared-first" "${TMPDIR}/shared-second"
+cp "$GITHUB_WORKSPACE/examples/shared/first-agent.yaml" "${TMPDIR}/shared-first/agent.yaml"
+cp "$GITHUB_WORKSPACE/examples/shared/second-agent.yaml" "${TMPDIR}/shared-second/agent.yaml"
+```
+
+## Testing
+
+```bash
+# should provision the shared plugin for the first agent without workspace setup
+openclaw plugins list --json | jq -e 'all(.plugins[]; .id != "codex")'
+cd "${TMPDIR}/shared-first"
+openclaw agent-system install --skip-setup --json | jq -e '
+  (.outcomes | any(.component == "codex-plugin" and
+    .code == "codex-plugin-installed" and .status == "created")) and
+  (.outcomes | any(.component == "agent" and .status == "created")) and
+  (.outcomes | all(.component != "setup"))
+'
+openclaw plugins inspect codex --json | tee "${TMPDIR}/codex-first.json" | jq -e '.plugin.enabled == true and .plugin.status != "error" and .install != null'
+jq -S .install "${TMPDIR}/codex-first.json" > "${TMPDIR}/codex-receipt-before.json"
+openclaw config get plugins.entries.codex --json | jq -S . > "${TMPDIR}/codex-config-before.json"
+openclaw config get agents.entries.shared-first --json | jq -S . > "${TMPDIR}/first-agent-before.json"
+
+# should reuse the plugin for a second agent without changing the first agent
+cd "${TMPDIR}/shared-second"
+openclaw agent-system install --skip-setup --json | jq -e '
+  (.outcomes | any(.component == "codex-plugin" and
+    .code == "codex-plugin-unchanged" and .status == "unchanged")) and
+  (.outcomes | any(.component == "agent" and .status == "created")) and
+  (.outcomes | all(.component != "setup"))
+'
+openclaw plugins inspect codex --json | jq -S .install > "${TMPDIR}/codex-receipt-after.json"
+cmp "${TMPDIR}/codex-receipt-before.json" "${TMPDIR}/codex-receipt-after.json"
+openclaw config get plugins.entries.codex --json | jq -S . > "${TMPDIR}/codex-config-after.json"
+cmp "${TMPDIR}/codex-config-before.json" "${TMPDIR}/codex-config-after.json"
+openclaw config get agents.entries.shared-first --json | jq -S . > "${TMPDIR}/first-agent-after.json"
+cmp "${TMPDIR}/first-agent-before.json" "${TMPDIR}/first-agent-after.json"
+```

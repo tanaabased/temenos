@@ -1,0 +1,21 @@
+defaults: &maintenance
+  enabled: false
+  runtimes: [openclaw]
+  group: REPORTS
+  model: low
+  thread:
+    id: updates
+    name: AGENT UPDATE
+
+automations:
+  - <<: *maintenance
+    id: update-agent
+    display-name: '⬇️ UPDATE AGENT'
+    schedule: '30 23 * * *'
+    run: [bun, scripts/update-agent-task.js]
+
+  - <<: *maintenance
+    id: backup-agent
+    display-name: '💾 BACKUP AGENT'
+    schedule: '0 1 * * *'
+    run: [bun, scripts/backup-drive-task.js]
